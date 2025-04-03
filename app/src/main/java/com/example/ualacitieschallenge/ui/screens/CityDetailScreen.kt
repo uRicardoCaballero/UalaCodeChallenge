@@ -42,7 +42,7 @@ fun CityDetailScreen(
         }
 
         Text(
-            text = stringResource(R.string.coordinates_format, city.coord.lat, city.coord.lon),
+            text = stringResource(R.string.coordinates_format, city.coordinates.latitude, city.coordinates.longitude),
             style = MaterialTheme.typography.bodyLarge
         )
 

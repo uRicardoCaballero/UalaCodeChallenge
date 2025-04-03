@@ -1,69 +1,66 @@
 package com.example.ualacitieschallenge.ui.screens
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.unit.dp
 import com.example.ualacitieschallenge.data.model.City
-import com.example.ualacitieschallenge.ui.theme.UalaCitiesChallengeTheme
+import com.example.ualacitieschallenge.ui.components.CityItem
+import com.example.ualacitieschallenge.ui.components.SearchBar
 import com.example.ualacitieschallenge.ui.viewmodel.CityViewModel
+
 
 @Composable
 fun MainScreen(
     viewModel: CityViewModel,
-    navController: NavHostController = rememberNavController()
+    onCitySelected: (City) -> Unit // Explicitly define the type of city
 ) {
-    val selectedCity by viewModel.selectedCity.collectAsState()
-    val configuration = LocalConfiguration.current
+    val cities by viewModel.cities.collectAsState(initial = emptyList())
+    val isLoading by viewModel.isLoading.collectAsState()
+    val showOnlyFavorites by viewModel.showOnlyFavorites.collectAsState()
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    if (configuration.screenWidthDp >= 600) {
-        // Landscape or tablet layout
-        Row(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.weight(1f)) {
-                CityListScreen(
-                    viewModel = viewModel,
-                    onCitySelected = { viewModel.onCitySelected(it) }
-                )
-            }
-            Box(modifier = Modifier.weight(1f)) {
-                selectedCity?.let { city ->
-                    CityDetailScreen(
-                        city = city,
-                        viewModel = viewModel,
-                        onBackPressed = { viewModel.clearSelectedCity() }
-                    )
-                } ?: Text("Select a city to see details")
-            }
-        }
-    } else {
-        // Portrait layout
-        if (selectedCity == null) {
-            CityListScreen(
-                viewModel = viewModel,
-                onCitySelected = { viewModel.onCitySelected(it) }
-            )
-        } else {
-            selectedCity?.let { city ->
-                CityDetailScreen(
-                    city = city,
-                    viewModel = viewModel,
-                    onBackPressed = { viewModel.clearSelectedCity() }
-                )
-            }
+    // Handle errors (if any)
+    LaunchedEffect(Unit) {
+        viewModel.errorMessage.collect { message ->
+            errorMessage = message
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-    UalaCitiesChallengeTheme {
-        MainScreen(viewModel = CityViewModel())
+    Column(modifier = Modifier.fillMaxSize()) {
+        SearchBar(
+            onQueryChanged = viewModel::onSearchQueryChanged,
+            showOnlyFavorites = showOnlyFavorites,
+            onShowOnlyFavoritesChanged = viewModel::onShowOnlyFavoritesChanged
+        )
+
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.fillMaxSize().wrapContentSize())
+        } else if (errorMessage != null) {
+            // Display error message
+            ErrorMessage(errorMessage!!)
+        } else {
+            if (cities.isEmpty()) {
+                // Display a message when no cities are found
+                NoCitiesFoundMessage()
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(cities) { city ->
+                        CityItem(
+                            city = city,
+                            onCitySelected = onCitySelected, // Pass the onCitySelected lambda
+                            onToggleFavorite = { viewModel.onToggleFavorite(city) }
+                        )
+                    }
+                }
+            }
+        }
     }
 }

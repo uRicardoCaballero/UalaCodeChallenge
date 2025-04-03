@@ -4,22 +4,22 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.ualacitieschallenge.data.model.City
+import com.example.ualacitieschallenge.data.model.CityEntity
 
 @Dao
 interface CityDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(cities: List<City>)
+    @Query("SELECT * FROM cities WHERE name LIKE :prefix || '%'")
+    fun searchCities(prefix: String): List<CityEntity>
 
-    @Query("SELECT * FROM cities WHERE isFavorite = 1")
-    suspend fun getFavoriteCities(): List<City>
+    @Query("SELECT * FROM cities WHERE name LIKE :prefix || '%' AND isFavorite = 1")
+    fun searchFavoriteCities(prefix: String): List<CityEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(cities: List<CityEntity>)
 
     @Query("UPDATE cities SET isFavorite = :isFavorite WHERE id = :cityId")
-    suspend fun updateFavoriteStatus(cityId: Long, isFavorite: Boolean)
+    fun updateFavoriteStatus(cityId: String, isFavorite: Boolean)
 
-    @Query("SELECT * FROM cities WHERE LOWER(name || ', ' || country) LIKE :prefix || '%' ORDER BY name, country")
-    suspend fun searchCities(prefix: String): List<City>
-
-    @Query("SELECT * FROM cities WHERE isFavorite = 1 AND LOWER(name || ', ' || country) LIKE :prefix || '%' ORDER BY name, country")
-    suspend fun searchFavoriteCities(prefix: String): List<City>
+    @Query("SELECT * FROM cities WHERE isFavorite = 1")
+    fun getFavoriteCities(): List<CityEntity>
 }

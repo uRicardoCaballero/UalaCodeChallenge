@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">UalaCitiesChallenge</string>
+    <string name="search_cities">Search cities...</string>
+    <string name="show_only_favorites">Show only favorites</string>
+    <string name="toggle_favorite">Toggle favorite</string>
+    <string name="back">Back</string>
+    <string name="coordinates_format">Coordinates: %.4f, %.4f</string>
+    <string name="no_cities_found">No cities found</string>
+    <string name="error_loading_cities">Failed to load cities</string>
 </resources>

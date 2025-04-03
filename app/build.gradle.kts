@@ -2,17 +2,17 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id ("com.google.dagger.hilt.android")
     id("kotlin-kapt")
 }
 
 android {
     namespace = "com.example.ualacitieschallenge"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.ualacitieschallenge"
-        minSdk = 28
-        targetSdk = 34
+        minSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.safe.args.generator)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,4 +69,10 @@ dependencies {
     kapt (libs.hilt.android.compiler)
     implementation (libs.hilt.android)
     kapt (libs.hilt.android.compiler.v250)
+    implementation (libs.androidx.hilt.navigation.compose)
+    implementation (libs.hilt.android)
+    implementation (libs.androidx.room.runtime)
+    kapt ("androidx.room:room-compiler:2.6.1")
+    implementation (libs.androidx.room.ktx.v260)
+
 }

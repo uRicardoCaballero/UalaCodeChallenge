@@ -10,42 +10,59 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ualacitieschallenge.R
 import com.example.ualacitieschallenge.data.model.City
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 
 @Composable
 fun CityItem(
     city: City,
-    onCitySelected: (City) -> Unit,
-    onToggleFavorite: () -> Unit,
-    modifier: Modifier = Modifier
+    onCitySelected: (City) -> Unit, // Add this parameter
+    onToggleFavorite: (City) -> Unit // Add this parameter
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onCitySelected(city) }, // Handle city selection
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onCitySelected(city) }
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(16.dp)
         ) {
-            Column {
-                Text(
-                    text = "${city.name}, ${city.country}",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(
-                    text = stringResource(R.string.coordinates_format, city.coord.lat, city.coord.lon),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            FavoriteButton(
-                isFavorite = city.isFavorite,
-                onToggleFavorite = onToggleFavorite
+            Text(
+                text = city.name,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.fillMaxWidth()
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.coordinates_format, city.coordinates.latitude, city.coordinates.longitude),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = if (city.isFavorite) "Favorite" else "Not Favorite",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.weight(1f)
+                )
+                // Add a button or icon to toggle favorite status
+                IconButton(
+                    onClick = { onToggleFavorite(city) } // Handle favorite toggle
+                ) {
+                    Icon(
+                        imageVector = if (city.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = if (city.isFavorite) "Remove from favorites" else "Add to favorites"
+                    )
+                }
+            }
         }
     }
 }
