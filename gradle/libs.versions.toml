@@ -1,6 +1,10 @@
 [versions]
 agp = "8.7.0"
 converterGson = "2.9.0"
+hiltAndroid = "2.50"
+hiltAndroidCompiler = "2.28-alpha"
+hiltAndroidCompilerVersion = "2.50"
+hiltLifecycleViewmodel = "1.0.0"
 javaxInject = "1"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
@@ -17,7 +21,11 @@ roomKtx = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hiltLifecycleViewmodel" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+hilt-android-compiler-v250 = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompilerVersion" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
